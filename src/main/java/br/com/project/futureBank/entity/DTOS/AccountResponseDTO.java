@@ -9,3 +9,4 @@ public record AccountResponseDTO(Long id, String cpf, String balance, String adr
         this(account.getId(), account.getCpf(), account.getBalance(), account.getAdress());
     }
 }
+
