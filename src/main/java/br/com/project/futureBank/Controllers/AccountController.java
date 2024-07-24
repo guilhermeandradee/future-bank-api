@@ -54,8 +54,18 @@ public class AccountController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Account> saveAccount(@RequestBody AccountDTO accountDTO){
-        return ResponseEntity.ok(accountService.saveAccount(accountDTO));
+    public ResponseEntity<ResponseAPI<?>> saveAccount(@RequestBody AccountDTO accountDTO){
+        try {
+            ResponseAPI<AccountResponseDTO> response = new ResponseAPI<>(accountService.saveAccount(accountDTO), "Conta encontrada com sucesso", true);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException err){
+
+            ResponseAPI<String> response = new ResponseAPI<>(null, err.getMessage(), false);
+
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PutMapping("/make-deposit")

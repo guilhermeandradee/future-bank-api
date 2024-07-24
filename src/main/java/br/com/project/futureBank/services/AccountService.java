@@ -18,11 +18,19 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Account saveAccount(AccountDTO accountDTO){
+    public AccountResponseDTO saveAccount(AccountDTO accountDTO){
+
+        if (accountDTO.password() == null || accountDTO.password().isEmpty() ||
+                accountDTO.adress() == null || accountDTO.adress().isEmpty() ||
+                accountDTO.cpf() == null || accountDTO.cpf().isEmpty()) {
+            throw new RuntimeException("Os campos não podem ser nulos ou vazios!");
+        }
+
         Account account = new Account(accountDTO);
+        AccountResponseDTO accountResponseDTO = new AccountResponseDTO(account);
 
         accountRepository.save(account);
-        return account;
+        return accountResponseDTO;
     }
 
     public List<Account> getAllAccounts(){
