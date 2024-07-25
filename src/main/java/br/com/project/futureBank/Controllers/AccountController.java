@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -37,7 +36,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/get-by-cpf")
+    @PostMapping ("/get-by-cpf")
     public ResponseEntity<ResponseAPI<Account>> getByCpf(@RequestBody AccountCpfDTO accountCpfDTO){
         try {
             Account account = accountService.searchByCpf(accountCpfDTO.cpf());
@@ -69,15 +68,17 @@ public class AccountController {
     }
 
     @PutMapping("/make-deposit")
-    public ResponseEntity<String> makeDeposit(@RequestBody DepositRequestDTO depositRequestDTO){
+    public ResponseEntity<ResponseAPI<?>> makeDeposit(@RequestBody DepositRequestDTO depositRequestDTO){
 
         try {
             accountService.depositValue(depositRequestDTO.cpf(), depositRequestDTO.password(), depositRequestDTO.value());
-            return ResponseEntity.ok().body("Saldo depositado com sucesso!");
+            ResponseAPI<Object> responseAPI = new ResponseAPI<>(null, "Saldo depositado com sucesso!", true);
+
+            return ResponseEntity.ok().body(responseAPI);
 
         } catch (RuntimeException err){
 
-            return ResponseEntity.badRequest().body("Não foi possível adicionar saldo! -> " + err.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseAPI<>(null, err.getMessage(), false));
         }
 
     }
@@ -95,14 +96,16 @@ public class AccountController {
     }
 
     @PutMapping("/transfer-value")
-    public ResponseEntity<String> transferValue(@RequestBody TransferValueRequestDTO transferRequestDTO){
+    public ResponseEntity<ResponseAPI<?>> transferValue(@RequestBody TransferValueRequestDTO transferRequestDTO){
 
         try {
             accountService.transferValue(transferRequestDTO.cpf(), transferRequestDTO.password(), transferRequestDTO.cpfToReceive(), transferRequestDTO.value());
 
-            return ResponseEntity.ok().body("Transferência realizada.");
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "Valor transferido com sucesso!", true);
+
+            return ResponseEntity.ok(responseAPI);
         } catch (RuntimeException err){
-            return ResponseEntity.badRequest().body("A tranferência não foi efetuada -> " + err);
+            return ResponseEntity.badRequest().body(new ResponseAPI<>(null, err.getMessage(), false));
         }
     }
 
