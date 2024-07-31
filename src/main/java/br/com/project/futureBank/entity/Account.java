@@ -59,7 +59,7 @@ public class Account {
             return "Transferência no valor de -> " + valueToTransfer;
         } else {
 
-            return "Saldo insuficiente.";
+            throw new RuntimeException("Saldo insuficiente!");
         }
     }
 
