@@ -1,5 +1,6 @@
 package br.com.project.futureBank.services;
 
+import br.com.project.futureBank.UserProducer.UserProducer;
 import br.com.project.futureBank.entity.Account;
 import br.com.project.futureBank.entity.DTOS.AccountDTO;
 import br.com.project.futureBank.entity.DTOS.AccountResponseDTO;
@@ -18,6 +19,9 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private UserProducer userProducer;
+
     public AccountResponseDTO saveAccount(AccountDTO accountDTO){
 
         if (accountDTO.password() == null || accountDTO.password().isEmpty() ||
@@ -27,9 +31,10 @@ public class AccountService {
         }
 
         Account account = new Account(accountDTO);
-        AccountResponseDTO accountResponseDTO = new AccountResponseDTO(account);
+        AccountResponseDTO accountResponseDTO = new AccountResponseDTO(accountRepository.save(account));
 
-        accountRepository.save(account);
+        userProducer.publishMessageEmail(account);
+
         return accountResponseDTO;
     }
 

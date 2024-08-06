@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "accounts")
@@ -22,8 +23,8 @@ public class Account {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
     private String cpf;
     private BigDecimal balance;
     private String adress;
@@ -63,7 +64,7 @@ public class Account {
         }
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

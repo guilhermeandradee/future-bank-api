@@ -55,7 +55,7 @@ public class AccountController {
     @PostMapping("/save")
     public ResponseEntity<ResponseAPI<?>> saveAccount(@RequestBody AccountDTO accountDTO){
         try {
-            ResponseAPI<AccountResponseDTO> response = new ResponseAPI<>(accountService.saveAccount(accountDTO), "Conta encontrada com sucesso", true);
+            ResponseAPI<AccountResponseDTO> response = new ResponseAPI<>(accountService.saveAccount(accountDTO), "Conta criada com sucesso", true);
 
             return ResponseEntity.ok(response);
 
