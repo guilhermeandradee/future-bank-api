@@ -45,7 +45,7 @@ public class Account {
 
             return "Saque no valor de  -> " + valueToWithdraw;
         } else {
-            return "Saldo insuficiente.";
+            throw new RuntimeException("Saldo insuficiente.");
         }
     }
 

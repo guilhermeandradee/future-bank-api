@@ -96,5 +96,26 @@ public class AccountServiceTest {
             assertThrows(RuntimeException.class, () -> account.transferValue(new BigDecimal(10)));
 
         }
+
+        @Test
+        @DisplayName("Should withdraw balance")
+        void shouldWithdrawBalance(){
+            Account account = new Account(new AccountDTO("123", "123", "123"));
+            account.makeDeposit(new BigDecimal(15));
+
+            account.withdrawValue(new BigDecimal(10));
+
+            assertEquals(account.getBalance(), "R$5");
+
+            accountRepository.save(account);
+        }
+
+        @Test
+        @DisplayName("Should throw balance error")
+        void shouldThrowNotBalanceError(){
+            Account account = new Account(new AccountDTO("123", "123", "123"));
+
+            assertThrows(RuntimeException.class, () -> account.withdrawValue(new BigDecimal(10)));
+        }
     }
 }
