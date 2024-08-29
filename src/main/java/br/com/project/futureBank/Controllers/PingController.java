@@ -1,5 +1,6 @@
 package br.com.project.futureBank.Controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,8 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("ping")
 public class PingController {
 
-    @RequestMapping(value = "/ping", method = RequestMethod.HEAD)
+    @GetMapping(value = "/ping")
     public void getPing(){
-        System.out.println("ping");
+        int pingCount = 0;
+
+        pingCount++;
+
+        System.out.println("ping " + pingCount);
     }
 }
