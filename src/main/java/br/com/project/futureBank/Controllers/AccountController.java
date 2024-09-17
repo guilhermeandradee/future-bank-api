@@ -71,7 +71,13 @@ public class AccountController {
     @PostMapping("/save")
     public ResponseEntity<ResponseAPI<?>> saveAccount(@RequestBody AccountDTO accountDTO){
         try {
-            ResponseAPI<AccountResponseDTO> response = new ResponseAPI<>(accountService.saveAccount(accountDTO), "Conta criada com sucesso", true);
+            if(accountDTO.cpf().isEmpty() || accountDTO.cpf() == null){
+                return ResponseEntity.badRequest().body(new ResponseAPI<>(null, "O CPF não pode ser nulo ou vazio!", false));
+            }
+
+            String token = tokenService.tokenGenerate(accountDTO.cpf());
+
+            ResponseAPI<AccountResponseDTO> response = new ResponseAPI<>(accountService.saveAccount(accountDTO), "Conta criada com sucesso", true, token);
 
             return ResponseEntity.ok(response);
 
