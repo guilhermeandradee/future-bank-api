@@ -3,6 +3,7 @@ package br.com.project.futureBank.Controllers;
 import br.com.project.futureBank.entity.Account;
 import br.com.project.futureBank.entity.DTOS.*;
 import br.com.project.futureBank.services.AccountService;
+import br.com.project.futureBank.services.TokenService;
 import br.com.project.futureBank.util.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*", originPatterns = "*")
 @RequestMapping("account")
 public class AccountController {
+
+    @Autowired
+    TokenService tokenService;
 
     @Autowired
     AccountService accountService;
@@ -32,7 +37,7 @@ public class AccountController {
             return ResponseEntity.ok().body("Saldo de " + accountService.getBalance(balanceDTO.cpf(), balanceDTO.password()));
 
         } catch (RuntimeException err){
-            return ResponseEntity.badRequest().body("Não foi poss-ivel consultar saldo -> " + err.getMessage());
+            return ResponseEntity.badRequest().body("Não foi possível consultar saldo -> " + err.getMessage());
         }
     }
 

@@ -113,8 +113,7 @@ public class AccountService {
             return account;
 
         } catch (Exception err) {
-            System.err.println("Erro ao autenticar a conta: " + err.getMessage());
-            return null;
+            throw new RuntimeException(err);
         }
     }
 
