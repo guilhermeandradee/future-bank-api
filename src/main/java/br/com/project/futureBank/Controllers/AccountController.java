@@ -6,6 +6,7 @@ import br.com.project.futureBank.services.AccountService;
 import br.com.project.futureBank.services.TokenService;
 import br.com.project.futureBank.util.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,10 @@ public class AccountController {
 
     @Autowired
     TokenService tokenService;
+
+    private boolean isAuthorized(String token, String cpf) {
+        return tokenService.validateToken(token, cpf);
+    }
 
     @Autowired
     AccountService accountService;
@@ -43,6 +48,12 @@ public class AccountController {
 
     @PostMapping ("/get-by-cpf")
     public ResponseEntity<ResponseAPI<Account>> getByCpf(@RequestBody AccountCpfDTO accountCpfDTO){
+
+        if (!isAuthorized(accountCpfDTO.token(), accountCpfDTO.cpf())) {
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar authenticado!", false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseAPI);
+        }
+
         try {
             Account account = accountService.searchByCpf(accountCpfDTO.cpf());
 
@@ -75,6 +86,11 @@ public class AccountController {
     @PutMapping("/make-deposit")
     public ResponseEntity<ResponseAPI<?>> makeDeposit(@RequestBody DepositRequestDTO depositRequestDTO){
 
+        if (!isAuthorized(depositRequestDTO.token(), depositRequestDTO.cpf())) {
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar authenticado!", false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseAPI);
+        }
+
         try {
             accountService.depositValue(depositRequestDTO.cpf(), depositRequestDTO.password(), depositRequestDTO.value());
             ResponseAPI<Object> responseAPI = new ResponseAPI<>(null, "Saldo depositado com sucesso!", true);
@@ -89,19 +105,35 @@ public class AccountController {
     }
 
     @PutMapping("/withdraw-value")
-    public ResponseEntity<String> withdrawValue(@RequestBody DepositRequestDTO depositRequestDTO){
+    public ResponseEntity<ResponseAPI> withdrawValue(@RequestBody DepositRequestDTO depositRequestDTO){
+
+        if (!isAuthorized(depositRequestDTO.token(), depositRequestDTO.cpf())) {
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar authenticado!", false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseAPI);
+        }
+
         try {
             accountService.withdrawValue(depositRequestDTO.cpf(), depositRequestDTO.password(), depositRequestDTO.value());
 
-            return ResponseEntity.ok().body("Saque efetuado com sucesso!");
+            ResponseAPI<Object> responseAPI = new ResponseAPI<>(null, "Saque efetuado com sucesso!", true);
+
+            return ResponseEntity.ok().body(responseAPI);
+
         } catch (RuntimeException err){
 
-            return ResponseEntity.badRequest().body("Não foi possível sacar! -> " + err.getMessage());
+            ResponseAPI<Object> responseAPI = new ResponseAPI<>(null, "Não foi possível sacar! -> " + err.getMessage(), false);
+
+            return ResponseEntity.badRequest().body(responseAPI);
         }
     }
 
     @PutMapping("/transfer-value")
     public ResponseEntity<ResponseAPI<?>> transferValue(@RequestBody TransferValueRequestDTO transferRequestDTO){
+
+        if (!isAuthorized(transferRequestDTO.token(), transferRequestDTO.cpf())) {
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar authenticado!", false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseAPI);
+        }
 
         try {
             accountService.transferValue(transferRequestDTO.cpf(), transferRequestDTO.password(), transferRequestDTO.cpfToReceive(), transferRequestDTO.value());

@@ -7,5 +7,6 @@ import java.math.BigDecimal;
 
 public record DepositRequestDTO(String cpf,
                                 String password,
-                                @JsonDeserialize(using = CustomBigDecimalDeserializer.class) BigDecimal value) {
+                                @JsonDeserialize(using = CustomBigDecimalDeserializer.class) BigDecimal value,
+                                String token) {
 }
