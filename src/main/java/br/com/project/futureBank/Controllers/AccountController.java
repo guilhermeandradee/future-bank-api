@@ -89,6 +89,26 @@ public class AccountController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<ResponseAPI<?>> login(@RequestBody AccountDTO accountDTO){
+        if(accountDTO.cpf().isEmpty() || accountDTO.cpf() == null){
+            return ResponseEntity.badRequest().body(new ResponseAPI<>(null, "O CPF não pode ser nulo ou vazio!", false));
+        }
+
+        try {
+            accountService.AuthenticateAccount(accountDTO.cpf(), accountDTO.password());
+
+            String token = tokenService.tokenGenerate(accountDTO.cpf());
+
+            return ResponseEntity.ok().body(new ResponseAPI<>(null, "Autenticado com sucesso!", true, token));
+        } catch (Exception err){
+
+            return ResponseEntity.badRequest().body(new ResponseAPI<>(null, err.getMessage(), false));
+        }
+
+
+    }
+
     @PutMapping("/make-deposit")
     public ResponseEntity<ResponseAPI<?>> makeDeposit(@RequestBody DepositRequestDTO depositRequestDTO){
 
