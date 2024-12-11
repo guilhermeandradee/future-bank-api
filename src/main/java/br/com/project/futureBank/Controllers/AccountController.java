@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", originPatterns = "*")
+@CrossOrigin(origins = "https://future-bank.vercel.app/", allowedHeaders = "*", originPatterns = "*")
 @RequestMapping("account")
 public class AccountController {
 
@@ -50,7 +50,7 @@ public class AccountController {
     public ResponseEntity<ResponseAPI<Account>> getByCpf(@RequestBody AccountCpfDTO accountCpfDTO){
 
         if (!isAuthorized(accountCpfDTO.token(), accountCpfDTO.cpf())) {
-            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar authenticado!", false);
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar autenticado!", false);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseAPI);
         }
 
@@ -94,6 +94,7 @@ public class AccountController {
         if(accountDTO.cpf().isEmpty() || accountDTO.cpf() == null){
             return ResponseEntity.badRequest().body(new ResponseAPI<>(null, "O CPF não pode ser nulo ou vazio!", false));
         }
+        System.out.println("SENHA: " + accountDTO.password());
 
         try {
             accountService.AuthenticateAccount(accountDTO.cpf(), accountDTO.password());
@@ -134,7 +135,7 @@ public class AccountController {
     public ResponseEntity<ResponseAPI> withdrawValue(@RequestBody DepositRequestDTO depositRequestDTO){
 
         if (!isAuthorized(depositRequestDTO.token(), depositRequestDTO.cpf())) {
-            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar authenticado!", false);
+            ResponseAPI responseAPI = new ResponseAPI<>(null, "O usuário deve estar autenticado!", false);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseAPI);
         }
 

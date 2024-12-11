@@ -7,3 +7,4 @@ import java.math.BigDecimal;
 public record AccountDTO(String cpf, String adress, String password, String token) {
 
 }
+
