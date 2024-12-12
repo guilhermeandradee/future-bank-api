@@ -113,7 +113,7 @@ public class AccountServiceTest {
         @Test
         @DisplayName("Should throw balance error")
         void shouldThrowNotBalanceError(){
-            Account account = new Account(new AccountDTO("123", "123", "123"));
+            Account account = new Account(new AccountDTO("123", "123", "123", "123"));
 
             assertThrows(RuntimeException.class, () -> account.withdrawValue(new BigDecimal(10)));
         }
