@@ -39,7 +39,7 @@ public class AccountServiceTest {
         @DisplayName("Should find account by cpf.")
         void shouldFindAccount(){
 
-            AccountDTO accountDTO = new AccountDTO("123", "123@gmail.com", "123");
+            AccountDTO accountDTO = new AccountDTO("123", "123@gmail.com", "123", "123");
             Account account = new Account(accountDTO);
 
             when(accountRepository.findByCpf(any())).thenReturn(account);
@@ -51,7 +51,7 @@ public class AccountServiceTest {
         @Test
         @DisplayName("Shouldnt find acount")
         void ShouldTrhowError() throws Exception {
-            AccountDTO accountDTO = new AccountDTO("123", "123@gmail.com", "123");
+            AccountDTO accountDTO = new AccountDTO("123", "123@gmail.com", "123", "123");
             Account account = new Account(accountDTO);
 
             when(accountRepository.findByCpf(any())).thenReturn(null);
@@ -66,9 +66,9 @@ public class AccountServiceTest {
         @Test
         @DisplayName("Should transfer amount")
         void shouldTransferValue(){
-            Account account = new Account(new AccountDTO("123", "123", "123"));
+            Account account = new Account(new AccountDTO("123", "123@gmail.com", "123", "123"));
 
-            Account accountToReceive = new Account(new AccountDTO("111", "111", "111"));
+            Account accountToReceive = new Account(new AccountDTO("123", "123@gmail.com", "123", "123"));
 
             account.makeDeposit(new BigDecimal(20));
 
@@ -89,9 +89,9 @@ public class AccountServiceTest {
         @Test
         @DisplayName("Should trhow exception saying not credit")
         void shouldThrowExceptionNoCredit(){
-            Account account = new Account(new AccountDTO("123", "123", "123"));
+            Account account = new Account(new AccountDTO("123", "123@gmail.com", "123", "123"));
 
-            Account accountToReceive = new Account(new AccountDTO("111", "111", "111"));
+            Account accountToReceive = new Account(new AccountDTO("123", "123@gmail.com", "123", "123"));
 
             assertThrows(RuntimeException.class, () -> account.transferValue(new BigDecimal(10)));
 
@@ -100,7 +100,7 @@ public class AccountServiceTest {
         @Test
         @DisplayName("Should withdraw balance")
         void shouldWithdrawBalance(){
-            Account account = new Account(new AccountDTO("123", "123", "123"));
+            Account account = new Account(new AccountDTO("123", "123@gmail.com", "123", "123"));
             account.makeDeposit(new BigDecimal(15));
 
             account.withdrawValue(new BigDecimal(10));
@@ -113,7 +113,7 @@ public class AccountServiceTest {
         @Test
         @DisplayName("Should throw balance error")
         void shouldThrowNotBalanceError(){
-            Account account = new Account(new AccountDTO("123", "123", "123", "123"));
+            Account account = new Account(new AccountDTO("123", "123@gmail.com", "123", "123"));
 
             assertThrows(RuntimeException.class, () -> account.withdrawValue(new BigDecimal(10)));
         }
